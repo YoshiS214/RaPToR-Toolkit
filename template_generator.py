@@ -1,7 +1,7 @@
 # template_generator.py
 import os
-from Toolkit.sensor_websocket import sensor_data, sensor_data_lock
-from Toolkit.getters import get_all_actions
+from sensor_websocket import sensor_data, sensor_data_lock
+from getters import get_all_actions
 
 
 def generate_template(output_path="template.py"):

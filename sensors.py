@@ -4,7 +4,7 @@ import threading
 import tkinter as tk
 import json
 import os
-from Toolkit.sensor_websocket import update_sensor_state
+from sensor_websocket import update_sensor_state
 
 
 def parse_sensor_output_to_json(output: str):

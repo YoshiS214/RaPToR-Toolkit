@@ -2,13 +2,13 @@
 import tkinter as tk
 from tkinter import ttk
 import threading
-from Toolkit.getters import get_all_topics
-from Toolkit.terminal import execute_terminal_command, stop_running_process, set_terminal_widgets
-from Toolkit.actions import create_action_buttons, set_terminal_output
-from Toolkit.sensors import toggle_sensor
-from Toolkit.move import MovementController
-from Toolkit.sensor_websocket import start_websocket_server, update_sensor_state
-from Toolkit.template_generator import generate_template
+from getters import get_all_topics
+from terminal import execute_terminal_command, stop_running_process, set_terminal_widgets
+from actions import create_action_buttons, set_terminal_output
+from sensors import toggle_sensor
+from move import MovementController
+from sensor_websocket import start_websocket_server, update_sensor_state
+from template_generator import generate_template
 
 
 def send_keypress(key):
