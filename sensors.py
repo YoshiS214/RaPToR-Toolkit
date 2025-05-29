@@ -15,7 +15,7 @@ def parse_sensor_output_to_json(output: str):
     Returns:
         dict: A dictionary containing the parsed sensor data
     """
-    data = {}
+    data:dict[str,str] = {}
     for line in output.splitlines():
         if ": " in line:
             key, value = line.split(": ", 1)
@@ -59,7 +59,7 @@ def monitor_sensor(topic, var, textbox):
 
                     # Parse the content and update the sensor state
                     data = parse_sensor_output_to_json(content)
-                    update_sensor_state(topic, var.get(), data)
+                    update_sensor_state(topic, var.get(), data.__str__())
 
                 textbox.after(0, update)
 

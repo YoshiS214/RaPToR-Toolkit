@@ -5,10 +5,10 @@ import tkinter as tk
 from getters import get_all_actions
 
 
-terminal_output = None
+terminal_output: tk.Text|None = None
 
 
-def set_terminal_output(output_widget):
+def set_terminal_output(output_widget:tk.Text):
     """
     Set the terminal output widget for displaying command results
     Args:
@@ -35,6 +35,8 @@ def send_action_command(action, param_entry):
     else:
         param = '"{' + param_entry.get().strip() + '}"'
 
+    if terminal_output is None:
+        return
     # Display the command in the terminal output
     terminal_output.config(state=tk.NORMAL)
     terminal_output.insert(
@@ -58,6 +60,8 @@ def send_action_command(action, param_entry):
             text=True
         )
 
+        if process.stdout is None or terminal_output is None:
+            return
         # Display the output in the terminal
         for line in process.stdout:
             terminal_output.config(state=tk.NORMAL)
@@ -66,7 +70,7 @@ def send_action_command(action, param_entry):
             terminal_output.config(state=tk.DISABLED)
 
         process.wait()
-        if process.returncode != 0:
+        if process.returncode != 0 and process.stderr is not None:
             error_message = process.stderr.read()
             terminal_output.config(state=tk.NORMAL)
             terminal_output.insert(tk.END, f"Error: {error_message}")
@@ -94,7 +98,7 @@ def create_action_buttons(action_buttons_frame):
         row_frame.pack(fill="x", pady=5)
 
         param_entry = tk.Entry(row_frame, font=("Arial", 12))
-        param_entry.pack(side="right", fill="x", expand=True, padx=5)
+        param_entry.pack(side="right", fill="both", expand=True, padx=5)
 
         action_name = action[0][1:].replace("_", " ")
 
@@ -102,10 +106,10 @@ def create_action_buttons(action_buttons_frame):
             row_frame, text=action_name,
             command=lambda a=action, p=param_entry: send_action_command(a, p),
             bg="lightblue", fg="black", font=("Arial", 12),
-            wraplength=150, justify="center", width=15, height=2,
+            wraplength=0, justify="left", width=15, height=1,
             padx=10, pady=5
         )
-        action_button.pack(side="left", fill="y", expand=True, padx=5)
+        action_button.pack(side="left", fill="both", expand=True, padx=5)
 
         # Binding keyboard shortcuts to the parameter input boxes
         shortcuts = {

@@ -4,12 +4,12 @@ import subprocess
 import threading
 import tkinter as tk
 
-running_process = None
-terminal_output = None
-terminal_input = None
+running_process: subprocess.Popen|None = None
+terminal_output: tk.Text|None = None
+terminal_input: tk.Entry|None = None
 
 
-def set_terminal_widgets(output_widget, input_widget):
+def set_terminal_widgets(output_widget:tk.Text, input_widget:tk.Entry):
     """
     Set the terminal output and input widgets for executing commands
     Args:
@@ -32,6 +32,9 @@ def execute_terminal_command(event=None):
         None
     """
     global running_process
+    if terminal_input is None or terminal_output is None:
+        return
+
     if running_process:
         running_process.send_signal(signal.SIGINT)
         terminal_output.config(state=tk.NORMAL)
@@ -56,27 +59,31 @@ def execute_terminal_command(event=None):
     terminal_output.config(state=tk.DISABLED)
 
     def run_command():
-        process = subprocess.Popen(
+        global running_process
+        running_process = subprocess.Popen(
             command,
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True
         )
+        if terminal_input is None or terminal_output is None:
+            return
+        if running_process.stdout is not None:
+            for line in running_process.stdout:
+                terminal_output.config(state=tk.NORMAL)
+                terminal_output.insert(tk.END, line)
+                terminal_output.see(tk.END)
+                terminal_output.config(state=tk.DISABLED)
 
-        for line in process.stdout:
-            terminal_output.config(state=tk.NORMAL)
-            terminal_output.insert(tk.END, line)
-            terminal_output.see(tk.END)
-            terminal_output.config(state=tk.DISABLED)
+        if running_process.stderr is not None:
+            for line in running_process.stderr:
+                terminal_output.config(state=tk.NORMAL)
+                terminal_output.insert(tk.END, line, "error")
+                terminal_output.see(tk.END)
+                terminal_output.config(state=tk.DISABLED)
 
-        for line in process.stderr:
-            terminal_output.config(state=tk.NORMAL)
-            terminal_output.insert(tk.END, line, "error")
-            terminal_output.see(tk.END)
-            terminal_output.config(state=tk.DISABLED)
-
-        process.wait()
+        running_process.wait()
 
     threading.Thread(target=run_command, daemon=True).start()
     terminal_input.delete(0, tk.END)
@@ -91,6 +98,8 @@ def stop_running_process(event=None):
         None
     """
     global running_process
+    if terminal_input is None or terminal_output is None:
+        return
     if running_process:
         running_process.send_signal(signal.SIGINT)
         terminal_output.config(state=tk.NORMAL)

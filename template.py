@@ -269,10 +269,12 @@ def _send_action(name, path, param):
         command, shell=True,
         stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
     )
+    if process.stdout is None:
+        return
     for line in process.stdout:
         print(line, end="")
     process.wait()
-    if process.returncode != 0:
+    if process.returncode != 0 and process.stderr is not None:
         print("Error:", process.stderr.read())
 
 if __name__ == '__main__':

@@ -186,8 +186,8 @@ if __name__ == "__main__":
     # Setup the window
     root = tk.Tk()
     root.title("RaPToR: Rapid Prototyping Toolkit for Robotics")
-    root.geometry("1600x900")
-    root.resizable(False, False)
+    root.geometry("3200x1800")
+    root.resizable(True, True)
     root.configure(bg="white")
     root.bind("<Control-c>", stop_running_process)
     root.bind("<Control-C>", stop_running_process)
@@ -217,7 +217,7 @@ if __name__ == "__main__":
 
     # Terminal output
     terminal_output = tk.Text(terminal_frame, height=20, font=(
-        "Arial", 12), state=tk.DISABLED, bg="black", fg="white")
+        "Arial", 12), state=tk.DISABLED, bg="black", fg="white", padx=5)
     terminal_output.pack(fill="both", expand=True)
     terminal_output.tag_config("error", foreground="red")
 
